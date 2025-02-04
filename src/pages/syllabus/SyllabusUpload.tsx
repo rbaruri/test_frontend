@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
+import './SyllabusUpload.css';
 
 const SyllabusUpload = () => {
-  const [startDate, setStartDate] = useState<Date | null>(null); // Track the selected start date
-  const [endDate, setEndDate] = useState<Date | null>(null); // Track the selected end date
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<'initial' | 'uploading' | 'success' | 'fail'>('initial');
+  const [dateRange, setDateRange] = useState({
+    startDate: '',
+    endDate: ''
+  });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -15,11 +16,21 @@ const SyllabusUpload = () => {
     }
   };
 
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDateRange({
+      ...dateRange,
+      [e.target.name]: e.target.value
+    });
+  };
+
   const handleUpload = async () => {
-    if (file) {
+    if (file && dateRange.startDate && dateRange.endDate) {
       setStatus('uploading');
+
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('startDate', dateRange.startDate);
+      formData.append('endDate', dateRange.endDate);
 
       try {
         const result = await fetch('https://httpbin.org/post', {
@@ -37,67 +48,89 @@ const SyllabusUpload = () => {
     }
   };
 
-  // Disable the upload button if no date is selected or no file is uploaded
-  const isUploadDisabled = !startDate || !endDate || !file;
-
   return (
-    <>
-      <h1>Syllabus Upload</h1>
+    <div className="container">
+      <div className="card syllabus-upload">
+        <h1>Upload Your Syllabus</h1>
+        
+        <div className="upload-section">
+          <div className="date-range">
+            <div className="form-group">
+              <label htmlFor="startDate">Start Date</label>
+              <input
+                type="date"
+                id="startDate"
+                name="startDate"
+                className="input-field"
+                value={dateRange.startDate}
+                onChange={handleDateChange}
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="endDate">End Date</label>
+              <input
+                type="date"
+                id="endDate"
+                name="endDate"
+                className="input-field"
+                value={dateRange.endDate}
+                onChange={handleDateChange}
+              />
+            </div>
+          </div>
 
-      <div className="input-group">
-        <label>Select Start Date:</label>
-        <DatePicker
-          selected={startDate}
-          onChange={(date: Date | null) => setStartDate(date)} // Update the selected start date
-        />
+          <div className="file-upload">
+            <label className="file-label">
+              <input 
+                type="file" 
+                onChange={handleFileChange}
+                accept=".pdf,.doc,.docx"
+              />
+              <span className="btn">Choose File</span>
+            </label>
+          </div>
+
+          {file && (
+            <div className="file-details">
+              <h3>File Details</h3>
+              <ul>
+                <li>Name: {file.name}</li>
+                <li>Type: {file.type}</li>
+                <li>Size: {(file.size / 1024).toFixed(2)} KB</li>
+              </ul>
+            </div>
+          )}
+
+          <button
+            onClick={handleUpload}
+            className="btn upload-btn"
+            disabled={!file || !dateRange.startDate || !dateRange.endDate}
+          >
+            Upload Syllabus
+          </button>
+
+          <div className="upload-status">
+            <Result status={status} />
+          </div>
+        </div>
       </div>
-
-      <div className="input-group">
-        <label>Select End Date:</label>
-        <DatePicker
-          selected={endDate}
-          onChange={(date: Date | null) => setEndDate(date)} // Update the selected end date
-        />
-      </div>
-
-      <div className="input-group">
-        <input id="file" type="file" onChange={handleFileChange} />
-      </div>
-
-      {file && (
-        <section>
-          File details:
-          <ul>
-            <li>Name: {file.name}</li>
-            <li>Type: {file.type}</li>
-            <li>Size: {file.size} bytes</li>
-          </ul>
-        </section>
-      )}
-
-      <button
-        onClick={handleUpload}
-        className="submit"
-        disabled={isUploadDisabled} // Disable button if date or file is not selected
-      >
-        Upload a file
-      </button>
-
-      <Result status={status} />
-    </>
+    </div>
   );
 };
 
 const Result = ({ status }: { status: string }) => {
-  if (status === 'success') {
-    return <p>✅ File uploaded successfully!</p>;
-  } else if (status === 'fail') {
-    return <p>❌ File upload failed!</p>;
-  } else if (status === 'uploading') {
-    return <p>⏳ Uploading selected file...</p>;
-  } else {
-    return null;
-  }
+  const messages = {
+    success: '✅ File uploaded successfully!',
+    fail: '❌ File upload failed!',
+    uploading: '⏳ Uploading selected file...'
+  };
+
+  return status !== 'initial' ? (
+    <div className={`status-message ${status}`}>
+      {messages[status as keyof typeof messages]}
+    </div>
+  ) : null;
 };
 
 export default SyllabusUpload;

@@ -1,0 +1,118 @@
+.syllabus-upload {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: var(--border-radius);
+}
+
+.upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.date-range {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #333;
+}
+
+.file-upload {
+    text-align: center;
+    padding: 2rem;
+    border: 2px dashed #ddd;
+    border-radius: var(--border-radius);
+    background-color: #f9f9f9;
+}
+
+.file-label input[type="file"] {
+    display: none;
+}
+
+.file-label .btn {
+    display: inline-block;
+    cursor: pointer;
+    font-weight: bold;
+    color: #007bff;
+    background-color: #e9ecef;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    transition: background-color 0.3s;
+}
+
+.file-label .btn:hover {
+    background-color: #d6d8db;
+}
+
+.file-details {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+}
+
+.file-details ul {
+    list-style: none;
+    padding: 0;
+}
+
+.file-details li {
+    margin: 0.5rem 0;
+    color: #555;
+}
+
+.upload-btn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.upload-btn:hover {
+    background-color: #0056b3;
+}
+
+.upload-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.status-message {
+    text-align: center;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+.status-message.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-message.fail {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-message.uploading {
+    background-color: #cce5ff;
+    color: #004085;
+}

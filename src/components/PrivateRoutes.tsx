@@ -1,11 +1,20 @@
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const PrivateRoutes = () => {
-  const { isAuthenticated } = useAuth();
+  const { user, loading } = useAuth();
+  const location = useLocation();
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  if (loading) {
+    return <div>Loading...</div>; // You can replace this with a proper loading component
+  }
+
+  return user ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/login" state={{ from: location }} replace />
+  );
 };
 
 export default PrivateRoutes;
